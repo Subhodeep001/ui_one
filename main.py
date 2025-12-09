@@ -3,125 +3,96 @@ from datetime import date
 
 st.set_page_config(page_title="Regulatory Intelligence Dashboard", layout="wide")
 
-# ------------------- Sidebar -------------------
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", [
-    "Home Dashboard",
-    "Regulatory Insights",
-    "Impact Analyzer",
-    "Decision Intelligence",
-    "Labeling Tracker",
-    "Cross-Country Comparison",
-    "AI Chat Interface"
-])
+# ---------------- HEADER ----------------
+st.title("📊 Unified Regulatory Intelligence Dashboard")
+st.caption(f"Live Regulatory Monitoring | {date.today()}")
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("📅 " + str(date.today()))
+st.markdown("---")
 
-# ------------------- Home Page -------------------
-if page == "Home Dashboard":
-    st.title("📊 Regulatory Intelligence Dashboard")
+# ---------------- TOP SUMMARY OVERVIEW ----------------
+col1, col2, col3, col4 = st.columns(4)
 
-    col1, col2, col3 = st.columns(3)
+col1.metric("New Regulatory Updates", "12", "+4")
+col2.metric("High Risk Alerts", "3", "⚠")
+col3.metric("Pending Action Items", "8", "+2")
+col4.metric("Label Updates in Review", "4", "📝")
 
-    with col1:
-        st.subheader("Today's Insights")
-        st.metric("New Updates", "12", "+4 from yesterday")
-        st.button("View Details")
+st.markdown("---")
 
-    with col2:
-        st.subheader("High Risk Alerts")
-        st.metric("Critical Alerts", "3", "-1 vs last week")
-        st.button("View Alerts")
+# ---------------- SEARCH & FILTERS ----------------
+st.subheader("🔍 Explore Regulatory Data")
+search = st.text_input("Search regulations, country, product, guideline...")
+colA, colB, colC = st.columns(3)
+with colA: st.selectbox("Country/Authority", ["All", "FDA", "EMA", "CDSCO", "MHRA", "PMDA", "TGA"])
+with colB: st.selectbox("Risk Level", ["All", "High", "Medium", "Low"])
+with colC: st.date_input("Filter by Date")
 
-    with col3:
-        st.subheader("Pending Actions")
-        st.metric("Open Tasks", "8", "+2 pending")
-        st.button("Open Tasks Board")
+st.markdown("---")
 
-    st.markdown("---")
+# ---------------- FULL COMBINED FEATURE SECTION ----------------
 
-    st.subheader("Recent Regulatory Updates")
-    sample_updates = [
-        ("FDA", "Drug X Safety Alert", "High"),
-        ("EMA", "Oncology guideline revision", "Medium"),
-        ("CDSCO", "Labelling format update", "Low"),
-    ]
-    for agency, title, risk in sample_updates:
-        st.write(f"**{agency}** — {title} — 🔥 Risk: `{risk}`")
-        st.button(f"View Impact →", key=title)
+with st.expander("📄 Daily Regulatory Insights (Auto Summarized)", expanded=True):
+    for i in range(1, 4):
+        st.write(f"**Update {i}:** Regulatory summary generated from document...")
+        st.text("AI Extracted compliance points, affected categories, key takeaways...")
+        c1, c2, c3 = st.columns([1,1,2])
+        c1.button("Analyze Impact", key=f"impact_{i}")
+        c2.button("Full Summary", key=f"summary_{i}")
+        c3.button("View Original PDF", key=f"pdf_{i}")
+        st.markdown("---")
 
-# ------------------- Regulatory Insights -------------------
-elif page == "Regulatory Insights":
-    st.title("📄 Daily Regulatory Insights")
-    st.text_input("Search updates...")
-    st.date_input("Filter by date")
-    st.selectbox("Region", ["All", "FDA", "EMA", "CDSCO", "MHRA", "TGA"])
+# ---------------- IMPACT + RISK + ACTION ENGINE ----------------
+with st.expander("⚠ Regulatory Impact + Risk Analyzer + Action Engine", expanded=True):
 
-    for i in range(1, 6):
-        with st.expander(f"Update {i} Summary"):
-            st.write("Automated summary of regulatory update...")
-            st.button("Analyze Impact", key=f"impact_{i}")
-            st.button("Open Full Document", key=f"doc_{i}")
+    st.subheader("Risk Assessment & Compliance Impact")
+    st.progress(0.75)
+    st.write("Impact Level: **High** on Product A | Compliance Action Required")
 
-# ------------------- Impact Analyzer -------------------
-elif page == "Impact Analyzer":
-    st.title("⚠ Impact & Risk Analyzer")
+    colX, colY = st.columns(2)
 
-    st.write("Select an update to analyze:")
-    st.selectbox("Choose Regulatory Update", [f"Update {i}" for i in range(1, 6)])
+    with colX:
+        st.write("🧪 **Products affected**: Drug A, Drug C")
+        st.write("📌 Impact area: Labeling, Safety Update Required")
+        st.button("Send teams alert")
+        st.button("Email stakeholders")
 
-    st.subheader("Risk Score")
-    st.progress(0.7)
-    st.write("Impact: **High** on Product A")
+    with colY:
+        st.write("🧠 **AI Suggested Actions**:")
+        st.checkbox("Review update internally")
+        st.checkbox("Update label section 4.3")
+        st.checkbox("Initiate safety board review")
+        st.button("Assign Task + Create Ticket")
 
-    st.write("📩 Notify via:")
-    colA, colB = st.columns(2)
-    colA.button("Send Email Alert")
-    colB.button("Push to Teams")
-
-# ------------------- Decision Intelligence -------------------
-elif page == "Decision Intelligence":
-    st.title("🧠 AI Decision Intelligence")
-
-    st.subheader("Recommended Action Items")
-    st.write("System generated next steps for selected updates")
-
-    actions = ["Review Change", "Assess Impact", "Update SOP", "Label Revision", "Close"]
-    for act in actions:
-        with st.expander(act):
-            st.write("Auto suggested steps...")
-            st.button("Assign Task", key=act)
-
-# ------------------- Label Tracker -------------------
-elif page == "Labeling Tracker":
-    st.title("🏷 Label Change Tracker")
+# ---------------- LABEL TRACKING ----------------
+with st.expander("🏷 Label Change Tracker"):
 
     st.dataframe({
-        "Product": ["Drug A", "Drug B"],
-        "Old Label": ["Text v1", "Text v3"],
-        "New Label": ["Text v2", "Text v4"],
-        "Status": ["Pending", "Completed"]
+        "Product": ["Drug A", "Drug B", "Drug C"],
+        "Current Version": ["v3.1","v1.4","v2.0"],
+        "Proposed Change": ["Safety text mod","Format update","Dosage clarif."],
+        "Status": ["Pending review","Completed","In drafting"]
     })
 
-    st.button("Upload Label Change Document")
-    st.button("Generate Label Draft via GPT")
+    st.button("Upload label document")
+    st.button("Generate GPT draft from changes")
 
-# ------------------- Cross-Country Comparison -------------------
-elif page == "Cross-Country Comparison":
-    st.title("🌍 Cross-Country Regulatory Comparison")
+# ---------------- COMPARISON ENGINE ----------------
+with st.expander("🌍 Cross-Country Regulatory Comparison"):
 
     st.table({
-        "Feature/Rule": ["Label Format", "Safety Alert", "Guideline Revision"],
-        "FDA": ["Updated", "Active", "2024"],
-        "EMA": ["Pending", "Active", "2025"],
-        "CDSCO": ["Active", "No Alert", "2023"],
+        "Feature/Rule":["Label Format","Safety Alert","Guideline Revision"],
+        "FDA":["Updated","Active","2024"],
+        "EMA":["Pending","Active","2025"],
+        "CDSCO":["Active","None","2023"]
     })
 
-# ------------------- Chat Interface -------------------
-elif page == "AI Chat Interface":
-    st.title("💬 AI Regulatory Chat")
-    user_query = st.text_input("Ask anything about regulatory data...")
-    if st.button("Generate Response"):
-        st.write("🤖 GPT Response: (mock text) This update may affect product X...")
+    st.button("Export comparison report")
+
+# ---------------- AI CHAT (Integrated live panel) ----------------
+st.markdown("---")
+st.subheader("💬 Ask the Regulatory AI Assistant")
+
+query = st.text_input("Ask anything... (e.g. Show high risk EMA changes for oncology)")
+if st.button("Generate Response"):
+    st.write("🤖 *Mock Response:* Based on last 7 days, EMA has 2 major oncology updates affecting Drug A and B with high risk...")
 
