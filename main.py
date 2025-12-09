@@ -1,89 +1,69 @@
 import streamlit as st
 from datetime import date
 
-st.set_page_config(page_title="Unified Regulatory Dashboard", layout="wide")
+st.set_page_config(page_title="Regulatory Update Dashboard", layout="wide")
 
-st.title("📊 Unified Regulatory Intelligence Dashboard")
-st.caption("All insights, impacts, actions, label tracking, comparisons & chat — in one place.")
+st.title("📊 Regulatory Updates & Impact Center")
+st.caption("Single-screen oversight of regulatory changes, impacts & action categories.")
 st.markdown(f"📅 **{date.today()}**")
 st.markdown("---")
 
-# ======= TOP METRICS =======
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("New Updates Today", "14")
-c2.metric("High-Risk Alerts", "3")
-c3.metric("Pending Actions", "10")
-c4.metric("Labels Requiring Update", "2")
+# ===== SUMMARY CARDS =====
+col1, col2, col3 = st.columns(3)
+col1.metric("New Updates Today", "9")
+col2.metric("High Impact", "3")
+col3.metric("Require Action", "6")
 
 st.markdown("---")
 
-# ======= DAILY INSIGHTS =======
-st.subheader("📄 Daily Regulatory Insights (Auto Summarized)")
-for i in range(1, 4):
-    with st.expander(f"Update {i}: Example Regulatory Change Summary"):
-        st.write("AI-generated concise summary of regulatory update …")
-        st.write("Agency: FDA | Region: USA | Category: Labeling | Severity: High")
-
-        if st.button(f"Analyze Impact on Products #{i}"):
-            st.session_state[f"impact_show_{i}"] = True
-        if st.session_state.get(f"impact_show_{i}", False):
-            st.success("Product A — High Risk | Product C — Medium Risk")
-            st.button("Push Alert to Teams")
-            st.button("Send Email to Product Owner")
+# Filters
+st.subheader("🔍 Filter Updates")
+f1, f2, f3 = st.columns(3)
+f1.multiselect("Region", ["FDA","EMA","CDSCO","MHRA","TGA"], default=["FDA","EMA"])
+f2.multiselect("Impact Level", ["High","Medium","Low"])
+f3.multiselect("Category", ["Label Change","SOP Change","Safety Alert","Packaging","CMC","Risk"])
 
 st.markdown("---")
 
-# ======= DECISION & ACTION SYSTEM =======
-st.subheader("🧠 Decision Intelligence (Auto Action Recommendations)")
+# ===== UPDATES LIST WITH IMPACT + CATEGORY =====
+st.subheader("📄 Recent Regulatory Updates")
 
-actions = [
-    "Review change with RA team",
-    "Initiate label revision",
-    "Assess manufacturing documentation",
-    "Update internal SOP",
+updates = [
+    {"id":1,"title":"FDA warning insertion required","impact":"High","category":"Label Change"},
+    {"id":2,"title":"EMA guideline update on storage","impact":"Medium","category":"SOP Change"},
+    {"id":3,"title":"CDSCO packaging note revised","impact":"Low","category":"Packaging"},
+    {"id":4,"title":"EMA oncology labeling modification","impact":"High","category":"Label Change"},
 ]
 
-for act in actions:
-    st.checkbox(f"✔ {act}", value=False)
+for u in updates:
+    with st.container():
+        st.markdown(f"### {u['title']}")
+        st.write(f"📍 **Category:** `{u['category']}`")
+        st.write(f"🔥 **Impact Level:** **{u['impact']}**")
 
-st.button("Convert Actions to Tasks & Assign Owners")
+        colA, colB, colC = st.columns([1,1,2])
+        colA.button("View Summary", key=f"summary_{u['id']}")
+        colB.button("View Impact Details", key=f"impact_{u['id']}")
+        colC.button("Generate Action Item", key=f"action_{u['id']}")
 
-st.markdown("---")
+        st.markdown("---")
 
-# ======= LABEL CHANGE TRACKER =======
-st.subheader("🏷 Labeling Updates Automatically Mapped")
+# ===== ACTION WORKFLOW =====
+st.subheader("🧠 Action Items for Updates")
+st.write("Generated only when update requires work")
 
 st.table({
-    "Product": ["Drug X", "Drug Y"],
-    "Current Label Version": ["v1.2", "v3.4"],
-    "Required Update": ["Yes", "In Review"],
-    "Status": ["Pending", "Under Evaluation"]
-})
-
-st.button("Auto-Generate New Label Draft (GPT)")
-
-st.markdown("---")
-
-# ======= COUNTRY COMPARISON TABLE =======
-st.subheader("🌍 Cross-Country Rule Comparison (Auto-Sync)")
-
-st.dataframe({
-    "Rule": ["Label Format Update", "Safety Alert", "Packaging Warning"],
-    "FDA": ["Active", "High", "Pending"],
-    "EMA": ["Active", "Active", "Active"],
-    "CDSCO": ["Pending", "No Alert", "Active"]
+    "Update": ["FDA warning insertion", "EMA oncology labeling"],
+    "Category": ["Label Change","Label Change"],
+    "Impact": ["High","High"],
+    "Action Status": ["Pending","Assigned"]
 })
 
 st.markdown("---")
 
-# ======= AI CHAT INTERFACE =======
-st.subheader("💬 Chat with Your Regulatory Data")
+# ===== OPTIONAL AI CHAT =====
+st.subheader("💬 Ask AI about any update")
+q = st.text_input("e.g. 'Show all high impact label changes this week'")
+if st.button("Ask"):
+    st.write("🤖 *AI Response Placeholder*")
 
-query = st.text_input("Ask about regulations, impacts, products, timelines...")
-if st.button("Ask AI"):
-    st.write("🤖 *Mock Response:* This regulation affects Drug X in US & EU. Risk: High.")
-
-st.markdown("---")
-
-# ======= FOOTER ANALYTICS =======
-st.caption("Powered by Automated Compliance Scanning + LLM Regulatory Intelligence Layer")
